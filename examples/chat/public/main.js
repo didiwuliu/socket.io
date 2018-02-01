@@ -7,7 +7,7 @@ $(function() {
     '#3b88eb', '#3824aa', '#a700ff', '#d300e7'
   ];
 
-  // Initialize varibles
+  // Initialize variables
   var $window = $(window);
   var $usernameInput = $('.usernameInput'); // Input for username
   var $messages = $('.messages'); // Messages area
@@ -30,7 +30,7 @@ $(function() {
     if (data.numUsers === 1) {
       message += "there's 1 participant";
     } else {
-      message += "there're " + data.numUsers + " participants";
+      message += "there are " + data.numUsers + " participants";
     }
     log(message);
   }
@@ -146,7 +146,7 @@ $(function() {
 
   // Prevents input from having injected markup
   function cleanInput (input) {
-    return $('<div/>').text(input).text();
+    return $('<div/>').text(input).html();
   }
 
   // Updates the typing event
@@ -229,7 +229,7 @@ $(function() {
   socket.on('login', function (data) {
     connected = true;
     // Display the welcome message
-    var message = "Welcome to Socket.IO Chat &mdash; ";
+    var message = "Welcome to Socket.IO Chat – ";
     log(message, {
       prepend: true
     });
@@ -263,4 +263,20 @@ $(function() {
   socket.on('stop typing', function (data) {
     removeChatTyping(data);
   });
+
+  socket.on('disconnect', function () {
+    log('you have been disconnected');
+  });
+
+  socket.on('reconnect', function () {
+    log('you have been reconnected');
+    if (username) {
+      socket.emit('add user', username);
+    }
+  });
+
+  socket.on('reconnect_error', function () {
+    log('attempt to reconnect has failed');
+  });
+
 });
